@@ -1,8 +1,43 @@
 {
-    "pages": {
-
-    },
-    "settings":{
-        
-    }
+    "buttons": [
+        {
+            "class": "PageButton",
+            "position": [
+                0,
+                0
+            ],
+            "args": {}
+        },
+        {
+            "class": "PageButton",
+            "position": [
+                1,
+                0
+            ],
+            "args": {}
+        },
+        {
+            "class": "SoundButton",
+            "position": [
+                0,
+                1
+            ],
+            "args": {
+                "page": 0,
+                "path": "C:/Users/alexa/Music/memes/CurbYour.mp3"
+            }
+        },
+        {
+            "class": "SoundButton",
+            "position": [
+                1,
+                1
+            ],
+            "args": {
+                "page": 1,
+                "path": "C:/Users/alexa/Music/memes/TheOnlyThingTheyFearIsYou.mp3"
+            }
+        }
+    ],
+    "current_page": 0
 }
