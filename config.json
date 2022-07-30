@@ -123,6 +123,248 @@
             "args": {
                 "function": "exit"
             }
+        },
+        {
+            "class": "SoundButton",
+            "position": [
+                0,
+                8
+            ],
+            "args": {
+                "path": "C:\\Users\\alexa\\Music\\memes\\Bruh.mp3",
+                "page": 1
+            }
+        },
+        {
+            "class": "SoundButton",
+            "position": [
+                1,
+                8
+            ],
+            "args": {
+                "path": "C:\\Users\\alexa\\Music\\memes\\Bruh.mp3",
+                "page": 1
+            }
+        },
+        {
+            "class": "SoundButton",
+            "position": [
+                0,
+                7
+            ],
+            "args": {
+                "path": "C:\\Users\\alexa\\Music\\memes\\Bruh.mp3",
+                "page": 1
+            }
+        },
+        {
+            "class": "SoundButton",
+            "position": [
+                2,
+                7
+            ],
+            "args": {
+                "path": "C:\\Users\\alexa\\Music\\memes\\Bruh.mp3",
+                "page": 1
+            }
+        },
+        {
+            "class": "SoundButton",
+            "position": [
+                1,
+                7
+            ],
+            "args": {
+                "path": "C:\\Users\\alexa\\Music\\memes\\Bruh.mp3",
+                "page": 1
+            }
+        },
+        {
+            "class": "SoundButton",
+            "position": [
+                2,
+                8
+            ],
+            "args": {
+                "path": "C:\\Users\\alexa\\Music\\memes\\Bruh.mp3",
+                "page": 1
+            }
+        },
+        {
+            "class": "SoundButton",
+            "position": [
+                0,
+                6
+            ],
+            "args": {
+                "path": "C:\\Users\\alexa\\Music\\memes\\Bruh.mp3",
+                "page": 1
+            }
+        },
+        {
+            "class": "SoundButton",
+            "position": [
+                1,
+                6
+            ],
+            "args": {
+                "path": "C:\\Users\\alexa\\Music\\memes\\Bruh.mp3",
+                "page": 1
+            }
+        },
+        {
+            "class": "HotKeyButton",
+            "position": [
+                7,
+                8
+            ],
+            "args": {
+                "keys": [
+                    "c"
+                ],
+                "page": 1
+            }
+        },
+        {
+            "class": "HotKeyButton",
+            "position": [
+                6,
+                8
+            ],
+            "args": {
+                "keys": [
+                    "c"
+                ],
+                "page": 1
+            }
+        },
+        {
+            "class": "HotKeyButton",
+            "position": [
+                7,
+                7
+            ],
+            "args": {
+                "keys": [
+                    "c"
+                ],
+                "page": 1
+            }
+        },
+        {
+            "class": "HotKeyButton",
+            "position": [
+                5,
+                8
+            ],
+            "args": {
+                "keys": [
+                    "c"
+                ],
+                "page": 1
+            }
+        },
+        {
+            "class": "HotKeyButton",
+            "position": [
+                6,
+                7
+            ],
+            "args": {
+                "keys": [
+                    "c"
+                ],
+                "page": 1
+            }
+        },
+        {
+            "class": "HotKeyButton",
+            "position": [
+                5,
+                7
+            ],
+            "args": {
+                "keys": [
+                    "c"
+                ],
+                "page": 1
+            }
+        },
+        {
+            "class": "HotKeyButton",
+            "position": [
+                7,
+                6
+            ],
+            "args": {
+                "keys": [
+                    "c"
+                ],
+                "page": 1
+            }
+        },
+        {
+            "class": "HotKeyButton",
+            "position": [
+                6,
+                6
+            ],
+            "args": {
+                "keys": [
+                    "c"
+                ],
+                "page": 1
+            }
+        },
+        {
+            "class": "HotKeyButton",
+            "position": [
+                3,
+                3
+            ],
+            "args": {
+                "keys": [
+                    "c"
+                ],
+                "page": 1
+            }
+        },
+        {
+            "class": "HotKeyButton",
+            "position": [
+                4,
+                3
+            ],
+            "args": {
+                "keys": [
+                    "c"
+                ],
+                "page": 1
+            }
+        },
+        {
+            "class": "HotKeyButton",
+            "position": [
+                4,
+                2
+            ],
+            "args": {
+                "keys": [
+                    "c"
+                ],
+                "page": 1
+            }
+        },
+        {
+            "class": "SoundButton",
+            "position": [
+                3,
+                2
+            ],
+            "args": {
+                "path": "C:\\Users\\alexa\\Music\\memes\\CurbYour.mp3",
+                "page": 1
+            }
         }
     ],
     "current_page": 0
