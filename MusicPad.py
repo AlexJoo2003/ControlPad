@@ -253,39 +253,68 @@ class MusicPad:
         else:
             print("Cannot delete a non-existing button")
 
-    def pressButton(self, position):
-        self.delete_mode = False
-        self.create_mode = False
-        for button in pad.buttons:      # This turns off the delete_mode and create_mode if they are turned on
-            if isinstance(button, MetaButton) and hasattr(button, "function_name"):
-                if "mode_toggle" in button.function_name and button.color != "orange":
-                    button.changeColor("orange")
+    def turn_off_mode(self, mode):
+        print("turning off ", mode)
+        if mode == "create_mode_toggle":
+            for button in self.buttons:
+                if hasattr(button, "function_name"):
+                    if button.function_name == "create_mode_toggle":    # Turns off the create mode and turns the button back to orange
+                        button.changeColor("orange")
+                        self.create_mode = False
+        elif mode == "delete_mode_toggle":
+            for button in self.buttons:
+                if hasattr(button, "function_name"):
+                    if button.function_name == "delete_mode_toggle":    # Turns off the delete mode and turns the button back to orange
+                        button.changeColor("orange")
+                        self.delete_mode = False
 
-        if button := self.searchButton(position, page = self.current_page):
-            if isinstance(button, FunctionButton) and self.delete_mode:
-                self.deleteButton(position, page = self.current_page)
-                for button in self.buttons:
-                    if hasattr(button, "function_name"):
-                        if button.function_name == "delete_mode_toggle":
-                            button.run()            # Turns off the delete mode and turns the button back to orange
-            else:
-                print("Pressing the button")
-                button.run()
-        else:
+    def pressButton(self, position):
+
+        if button := self.searchButton(position, page = self.current_page):     # If the button exists
             if self.create_mode:
-                path = pyperclip.paste()
-                if path.startswith('"') and path.endswith('"'):
-                    path = path[1:-1]   # remove the double quotes if the user used the copy function in the explorer
-                if os.path.exists(path):                             # Use the path for the song
-                    pad.createButton(position, SoundButton, path = path, page = self.current_page)
-                    for button in self.buttons:
-                        if hasattr(button, "function_name"):
-                            if button.function_name == "create_mode_toggle":
-                                button.run()            # Turns off the create mode and turns the button back to orange
-                else:
-                    print("Path doesn't exist", path)
+                self.turn_off_mode("create_mode_toggle")
             else:
+                if self.delete_mode:                                            # if in delete mode
+                    if isinstance(button, FunctionButton):
+                        self.deleteButton(position, page = self.current_page)   # Only delete FunctionButton
+                    self.turn_off_mode("delete_mode_toggle")
+                else:
+                    # if self.create_mode:
+                    #     self.turn_off_mode("create_mode_toggle")
+                    # else:
+                    print("Pressing the button")
+                    button.run()
+        else:                                   # if the button doesn\t exist
+            if self.create_mode:                # create a button if in create mode
+                command = pyperclip.paste()
+                if command.startswith('"') and command.endswith('"'):
+                    command = command[1:-1]   # remove the double quotes if the user used the copy function in the file explorer
+                if os.path.exists(command) and command.endswith(".mp3"):                             # If it is a path and is an mp3 file, create a SoundButton
+                    pad.createButton(position, SoundButton, path = command, page = self.current_page)
+                    self.turn_off_mode("create_mode_toggle")
+                else:
+                    commands =  " ".join(command.split()).split(" ")   # this removes whitespaces and makes a list of keys
+                    is_valid = True
+                    for command in commands:
+                        if not command in pyautogui.KEYBOARD_KEYS:
+                            print("Command unkown")
+                            self.turn_off_mode("create_mode_toggle")
+                            is_valid = False
+                            break
+                    if is_valid:
+                        self.createButton(position, HotKeyButton, keys = commands, page = self.current_page)
+                    
+            else:
+                if self.delete_mode:
+                    self.turn_off_mode("delete_mode_toggle")
                 print("Couldn't press the button, the button doesn't exist")
+        
+        # self.delete_mode = False
+        # self.create_mode = False
+        # for button in pad.buttons:      # This turns off the delete_mode and create_mode if they are turned on
+        #     if isinstance(button, MetaButton) and hasattr(button, "function_name"):
+        #         if "mode_toggle" in button.function_name and button.color != "orange":
+        #             button.changeColor("orange")
 
     def changePage(self, page):
         for button in self.buttons:     # Turns off all the buttons on the current page
