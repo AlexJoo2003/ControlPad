@@ -1,25 +1,16 @@
 from pygame import mixer    # To play sounds
 from os.path import exists  # To check if the config file exists
 import json # To read and write the config file
-from time import sleep
-from pprint import pprint
-import pyperclip
-import os
-import pyautogui
+import pyperclip # To get the clipboard value
+import os.path # To check if a sound file path exists on the system
+import pyautogui # To emulate keyboard presses
 try:
-    import launchpad_py as launchpad
+    import launchpad_py as launchpad # To connect to a launchpad (So far suppots only the Mini version)
 except ImportError:
     try:
         import launchpad
     except ImportError:
         sys.exit("error loading launchpad.py")
-
-#TODO: Detect launchpad button presses
-#TODO: Manipulate launchpad button lights
-#TODO: Play/Stop a sound and rise/lower the volume
-#TODO: Assing commands to buttons
-#TODO: Download mp3s
-#TODO: Read and Write settings to a json file.
 
 pad = None  # Global MusicPad object
 lp = None   # Global Launchpad object
@@ -81,11 +72,16 @@ class MetaButton(Button):
             self.color = "red"
         elif "mode_toggle" in self.function_name:
             self.color = "orange"
+        elif self.function_name == "empty_function":
+            self.color = "white"
         self.changeColor(self.color)
     
     def run(self):
         self.function()
     
+    def empty_function(self):
+        print("This is a placeholder MetaButton")           # This is used just so the user can\t add a functionbutton to where a metaButton is supposed to be
+
     def change_volume(self, volume):
         current_volume = mixer.music.get_volume()
         new_volume = current_volume + volume
@@ -169,18 +165,18 @@ class HotKeyButton(FunctionButton):
             pyautogui.keyDown(key)
         for key in self.keys:           # Release the Keys
             pyautogui.keyUp(key)
+        print("Keybind pressed")
 
 
 class MusicPad:
-    def __init__(self):
+    def __init__(self, model = "Mini"):
         self.config_path = "./config.json"
         config = self.loadConfig()
         self.current_page = config["current_page"]
-
         self.buttons = []
-        
         self.create_mode = False
         self.delete_mode = False
+        self.model = model
 
     def createButtons(self):
         config = self.loadConfig()
@@ -193,8 +189,7 @@ class MusicPad:
         print("Loading Config...")
         if not exists(self.config_path):    # Creates a new config if it is missing
             print("Config doens't exist, creating a new one...")
-            with open(self.config_path, 'w') as f:
-                json.dump({"buttons":[],"current_page": 0}, f, indent=4) 
+            self.resetConfig()
         config = {}
         with open(self.config_path, 'r') as f:
             config = json.load(f)
@@ -215,10 +210,12 @@ class MusicPad:
             json.dump(config, f, indent=4)
         print("Config saved")
 
-    def purgeConfig(self):
+    def resetConfig(self):
         print("Purging Config...")
         with open(self.config_path, 'w') as f:
             json.dump({"buttons": [], "current_page": 0}, f, indent=4)
+        if self.model == "Mini":
+            self.LaunchPadMini_default_setup()
         print("Config cleared")
 
     def searchButton(self, position, **args):
@@ -238,7 +235,6 @@ class MusicPad:
         new_button = button_class(position, **args)
         if self.searchButton(position, **args):
             print("This button is occupied")
-            #! Give a warning popup
         else:
             self.buttons.append(new_button)
             self.saveConfig()
@@ -279,9 +275,6 @@ class MusicPad:
                         self.deleteButton(position, page = self.current_page)   # Only delete FunctionButton
                     self.turn_off_mode("delete_mode_toggle")
                 else:
-                    # if self.create_mode:
-                    #     self.turn_off_mode("create_mode_toggle")
-                    # else:
                     print("Pressing the button")
                     button.run()
         else:                                   # if the button doesn\t exist
@@ -309,13 +302,6 @@ class MusicPad:
                     self.turn_off_mode("delete_mode_toggle")
                 print("Couldn't press the button, the button doesn't exist")
         
-        # self.delete_mode = False
-        # self.create_mode = False
-        # for button in pad.buttons:      # This turns off the delete_mode and create_mode if they are turned on
-        #     if isinstance(button, MetaButton) and hasattr(button, "function_name"):
-        #         if "mode_toggle" in button.function_name and button.color != "orange":
-        #             button.changeColor("orange")
-
     def changePage(self, page):
         for button in self.buttons:     # Turns off all the buttons on the current page
             if isinstance(button, FunctionButton):
@@ -337,95 +323,40 @@ class MusicPad:
                         button.changeColor("green")
             self.current_page = page
 
-def pause_test():
-    pad.purgeConfig()
-    pad.createButton([0,0], SoundButton, page = 0, path = "C:/Users/alexa/Music/memes/CurbYour.mp3")
-    pad.createButton([0,1], SoundButton, page = 0, path = "C:/Users/alexa/Music/memes/TheOnlyThingTheyFearIsYou.mp3")
-    print(">>> play curb")
-    input()
-    pad.pressButton([0,0])
-    print(">>> pause curb")
-    input()
-    pad.pressButton([0,0])
-    print(">>> play doom")
-    input()
-    pad.pressButton([0,1])
-    print(">>> play curb")
-    input()
-    pad.pressButton([0,0])
-    print(">>> pause curb")
-    input()
-    pad.pressButton([0,0])
-    print(">>> unpause curb")
-    input()
-    pad.pressButton([0,0])
-    input(">>> done")
+    def LaunchPadMini_default_setup():          # This is my prefered setup for my Launchpad Mini, if you have a different model that launchpad.py supports then it's possible to create a setup for it too
+        self.deleteButton([0,0])
+        self.deleteButton([1,0])
+        self.deleteButton([2,0])
+        self.deleteButton([3,0])
+        self.deleteButton([4,0])
+        self.deleteButton([5,0])
+        self.deleteButton([6,0])
+        self.deleteButton([7,0])
+        self.deleteButton([8,1])
+        self.deleteButton([8,2])
+        self.deleteButton([8,3])
+        self.deleteButton([8,4])
+        self.deleteButton([8,5])
+        self.deleteButton([8,6])
+        self.deleteButton([8,7])
+        self.deleteButton([8,8])
 
-def create_delete_test():
-    pad.purgeConfig()
-    input(">>> Create a SoundButton...")
-    pad.createButton([0,0], SoundButton, page = 0, path = "C:/Users/alexa/Music/memes/CurbYour.mp3")
-    input(">>> Delete that SoundButton...")
-    pad.deleteButton([0,0], page = 0)
-    print("==================================")
-    input(">>> Create a PageButton...")
-    pad.createButton([0,0], PageButton)
-    input(">>> Delete that PageButton...")
-    pad.deleteButton([0,0])
-    input(">>> Done")
-
-def page_test():
-    pad.purgeConfig()
-    input(">>> Create two SoundButtons and two Page buttons, current_page is 0")
-    pad.createButton([0,0], PageButton)
-    pad.createButton([1,0], PageButton)
-    pad.createButton([0,1], SoundButton, page = 0, path = "C:/Users/alexa/Music/memes/CurbYour.mp3")
-    pad.createButton([1,1], SoundButton, page = 1, path = "C:/Users/alexa/Music/memes/TheOnlyThingTheyFearIsYou.mp3")
-    pad.changePage(0)
-    input(">>> Press 0,0, should work cause the button is on page 0")
-    pad.pressButton([0,1])
-    input(">>> Press 1,1, should NOT work cause the button is on page 1")
-    pad.pressButton([1,1])
-    input(">>> Change the page to 1")
-    pad.pressButton([1,0])
-    input(">>> Press 0,1, should NOT work cause the button is on page 0")
-    pad.pressButton([0,1])
-    input(">>> Press 0,1, should work cause the button is on page 1")
-    pad.pressButton([1,1])
-    input(">>> Done")
-    pad.purgeConfig()
-
-def LaunchPadMk1_default_setup():
-
-    pad.deleteButton([0,0])
-    pad.deleteButton([1,0])
-    pad.deleteButton([2,0])
-    pad.deleteButton([3,0])
-    pad.deleteButton([4,0])
-    pad.deleteButton([5,0])
-    pad.deleteButton([6,0])
-    pad.deleteButton([7,0])
-    pad.deleteButton([8,1])
-    pad.deleteButton([8,2])
-    pad.deleteButton([8,3])
-    pad.deleteButton([8,5])
-    pad.deleteButton([8,6])
-    pad.deleteButton([8,8])
-
-    pad.createButton([0,0], PageButton)
-    pad.createButton([1,0], PageButton)
-    pad.createButton([2,0], PageButton)
-    pad.createButton([3,0], PageButton)
-    pad.createButton([4,0], PageButton)
-    pad.createButton([5,0], PageButton)
-    pad.createButton([6,0], PageButton)
-    pad.createButton([7,0], PageButton)
-    pad.createButton([8,1], MetaButton, function = "raise_volume")
-    pad.createButton([8,2], MetaButton, function = "lower_volume")
-    pad.createButton([8,3], MetaButton, function = "stop_music")
-    pad.createButton([8,5], MetaButton, function = "create_mode_toggle")
-    pad.createButton([8,6], MetaButton, function = "delete_mode_toggle")
-    pad.createButton([8,8], MetaButton, function = "exit")
+        pad.createButton([0,0], PageButton)
+        pad.createButton([1,0], PageButton)
+        pad.createButton([2,0], PageButton)
+        pad.createButton([3,0], PageButton)
+        pad.createButton([4,0], PageButton)
+        pad.createButton([5,0], PageButton)
+        pad.createButton([6,0], PageButton)
+        pad.createButton([7,0], PageButton)
+        pad.createButton([8,1], MetaButton, function = "raise_volume")
+        pad.createButton([8,2], MetaButton, function = "lower_volume")
+        pad.createButton([8,3], MetaButton, function = "stop_music")
+        pad.createButton([8,4], MetaButton, function = "empty_function")
+        pad.createButton([8,5], MetaButton, function = "create_mode_toggle")
+        pad.createButton([8,7], MetaButton, function = "empty_function")
+        pad.createButton([8,6], MetaButton, function = "delete_mode_toggle")
+        pad.createButton([8,8], MetaButton, function = "exit")
 
 def main():
 
@@ -435,9 +366,7 @@ def main():
     pad = MusicPad()
     pad.createButtons()
 
-    # LaunchPadMk1_default_setup()
-    
-    while True:
+    while True:             # Detects Launchpad Presses
         buts = lp.ButtonStateXY()
         if buts:
             if not buts[-1]:
