@@ -5,6 +5,8 @@ import pyperclip # To get the clipboard value
 import os.path # To check if a sound file path exists on the system
 import pyautogui # To emulate keyboard presses
 import sys  # To exit without error
+import pystray  # To have an option to close the app in the system tray
+import PIL.Image    # To have the stray have an image
 try:
     import launchpad_py as launchpad # To connect to a launchpad (So far suppots only the Mini version)
 except ImportError:
@@ -15,6 +17,7 @@ except ImportError:
 
 pad = None  # Global MusicPad object
 lp = None   # Global Launchpad object
+icon = None # Global Stray object
 if launchpad.Launchpad().Check(0):
     lp = launchpad.Launchpad()
     if lp.Open(0):
@@ -128,6 +131,7 @@ class MetaButton(Button):
         mixer.music.stop()
         lp.Reset()
         lp.Close()
+        icon.stop()
         sys.exit()
 
 class FunctionButton(Button):
@@ -361,7 +365,30 @@ class MusicPad:
             self.createButton([8,6], MetaButton, function = "delete_mode_toggle")
             self.createButton([8,8], MetaButton, function = "exit")
 
+working = True
+
+def stray_icon_clicked(icon, item): # Preferably the user 
+    if str(item) == "Exit":
+        mixer.stop()
+        icon.stop()
+        try:
+            lp.Reset()
+            lp.Close()
+        except:
+            pass
+        global working
+        working = False
+        sys.exit(0)     # This causes an error, but atleast it stops the app from running, which is what I need
+
 def main():
+
+    stray_image = PIL.Image.open("icon.png")    # Takes a little while to show up in the stray
+    global icon
+    icon = pystray.Icon("Control Pad", stray_image, menu=pystray.Menu(
+        pystray.MenuItem("Exit", stray_icon_clicked)
+    ))
+
+    icon.run_detached()     # .run() will not work because it is blocking
 
     mixer.init()                
     
@@ -369,7 +396,7 @@ def main():
     pad = MusicPad()
     pad.createButtons()
 
-    while True:             # Detects Launchpad Presses
+    while working:             # Detects Launchpad Presses
         buts = lp.ButtonStateXY()
         if buts:
             if not buts[-1]:
@@ -378,4 +405,6 @@ def main():
 
 
 if __name__ == "__main__":
+    # To compile
+    # pyinstaller --onefile --noconsole ControlPad.py
     main()
