@@ -6,7 +6,7 @@ import os.path # To check if a sound file path exists on the system
 import pyautogui # To emulate keyboard presses
 import sys  # To exit without error
 import pystray  # To have an option to close the app in the system tray
-import PIL.Image    # To have the stray have an image
+from PIL import Image, ImageDraw    # To have the stray have an image
 try:
     import launchpad_py as launchpad # To connect to a launchpad (So far suppots only the Mini version)
 except ImportError:
@@ -380,11 +380,17 @@ def stray_icon_clicked(icon, item): # Preferably the user
         working = False
         sys.exit(0)     # This causes an error, but atleast it stops the app from running, which is what I need
 
+def create_image():
+    # Generate an image and draw a pattern
+    image = Image.new('RGB', (200, 200))
+    dc = ImageDraw.Draw(image)
+    dc.rounded_rectangle(xy=(10,20,190,180), radius=360, fill="#3BB639")
+    return image
+
 def main():
 
-    stray_image = PIL.Image.open("icon.png")    # Takes a little while to show up in the stray
     global icon
-    icon = pystray.Icon("Control Pad", stray_image, menu=pystray.Menu(
+    icon = pystray.Icon("Control Pad", create_image(), menu=pystray.Menu(   # The Icon takes a few seconds to show up
         pystray.MenuItem("Exit", stray_icon_clicked)
     ))
 
