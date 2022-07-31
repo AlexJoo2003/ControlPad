@@ -4,6 +4,7 @@ import json # To read and write the config file
 import pyperclip # To get the clipboard value
 import os.path # To check if a sound file path exists on the system
 import pyautogui # To emulate keyboard presses
+import sys  # To exit without error
 try:
     import launchpad_py as launchpad # To connect to a launchpad (So far suppots only the Mini version)
 except ImportError:
@@ -21,14 +22,12 @@ if launchpad.Launchpad().Check(0):
     lp.Reset()
 else:
     print("Launchpad not available")
-    exit()
+    sys.exit()
 
 class Button:
     def __init__(self, position, **args):
         self.position = position
         self.args = args
-        self.color = "white"
-        self.changeColor(self.color)
 
     def run(self):
         print("Button pressed")
@@ -45,8 +44,6 @@ class Button:
             lp.LedCtrlXY(self.position[0], self.position[1], 0, 0)
         print("Changed", self.position, " color to ", self.color)
         
-        # lp.position color etc etc...
-
 class PageButton(Button):
     def __init__(self, position, **args):
         Button.__init__(self, position, **args)
@@ -131,7 +128,7 @@ class MetaButton(Button):
         mixer.music.stop()
         lp.Reset()
         lp.Close()
-        exit()
+        sys.exit()
 
 class FunctionButton(Button):
     def __init__(self, position, **args):
@@ -146,7 +143,6 @@ class SoundButton(FunctionButton):
         FunctionButton.__init__(self, position, **args)
         self.path = args["path"]
         self.color = "green"
-        self.changeColor(self.color)
 
     def run(self):
         mixer.music.load(self.path)
@@ -158,7 +154,6 @@ class HotKeyButton(FunctionButton):
         FunctionButton.__init__(self, position, **args)
         self.keys = args["keys"]
         self.color = "orange"
-        self.changeColor(self.color)
 
     def run(self):
         for key in self.keys:           # Press down the Keys
@@ -171,18 +166,23 @@ class HotKeyButton(FunctionButton):
 class MusicPad:
     def __init__(self, model = "Mini"):
         self.config_path = "./config.json"
-        config = self.loadConfig()
-        self.current_page = config["current_page"]
         self.buttons = []
         self.create_mode = False
         self.delete_mode = False
         self.model = model
+        config = self.loadConfig()
+        self.current_page = config["current_page"]
 
     def createButtons(self):
         config = self.loadConfig()
+        if not config["buttons"]:
+            self.defaultSetup()
         for button in config["buttons"]:
             constructor = globals()[button["class"]]    # Finds the class from a string...
             instance = constructor(button["position"], **button["args"])  # then creates the object
+            if isinstance(instance, FunctionButton):    # Only show the buttons on the current page
+                if instance.page == self.current_page:
+                    instance.changeColor(instance.color)
             self.buttons.append(instance)
 
     def loadConfig(self):
@@ -214,8 +214,6 @@ class MusicPad:
         print("Purging Config...")
         with open(self.config_path, 'w') as f:
             json.dump({"buttons": [], "current_page": 0}, f, indent=4)
-        if self.model == "Mini":
-            self.LaunchPadMini_default_setup()
         print("Config cleared")
 
     def searchButton(self, position, **args):
@@ -237,6 +235,9 @@ class MusicPad:
             print("This button is occupied")
         else:
             self.buttons.append(new_button)
+            if isinstance(new_button, FunctionButton):
+                if new_button.page == self.current_page:
+                    new_button.changeColor(new_button.color)
             self.saveConfig()
             print("Created a new button")
 
@@ -279,19 +280,18 @@ class MusicPad:
                     button.run()
         else:                                   # if the button doesn\t exist
             if self.create_mode:                # create a button if in create mode
+                self.turn_off_mode("create_mode_toggle")
                 command = pyperclip.paste()
                 if command.startswith('"') and command.endswith('"'):
                     command = command[1:-1]   # remove the double quotes if the user used the copy function in the file explorer
                 if os.path.exists(command) and command.endswith(".mp3"):                             # If it is a path and is an mp3 file, create a SoundButton
                     pad.createButton(position, SoundButton, path = command, page = self.current_page)
-                    self.turn_off_mode("create_mode_toggle")
                 else:
                     commands =  " ".join(command.split()).split(" ")   # this removes whitespaces and makes a list of keys
                     is_valid = True
                     for command in commands:
                         if not command in pyautogui.KEYBOARD_KEYS:
                             print("Command unkown")
-                            self.turn_off_mode("create_mode_toggle")
                             is_valid = False
                             break
                     if is_valid:
@@ -303,60 +303,63 @@ class MusicPad:
                 print("Couldn't press the button, the button doesn't exist")
         
     def changePage(self, page):
-        for button in self.buttons:     # Turns off all the buttons on the current page
-            if isinstance(button, FunctionButton):
-                if button.page == self.current_page:
-                    button.changeColor("white")
-
         if page != self.current_page:
             for button in self.buttons:
+                print(type(button))
                 if isinstance(button, PageButton): # Turns the selected page green while every other page white
                     if button.page != page:
                         if button.color != "white":
                             button.changeColor("white") 
                     else:
                         button.changeColor("green")
-                if isinstance(button, FunctionButton):  # Turns off all the buttons on the current page and turns on the buttons on the new page
+                elif isinstance(button, FunctionButton):  # Turns off all the buttons on the current page and turns on the buttons on the new page
                     if button.page == self.current_page:
-                        button.changeColor("white")
+                        # print("Turned off a button")
+                        if not self.searchButton(button.position, page = page): # Only remove the color if there isn't another button to take it's place
+                            button.changeColor("white")
                     elif button.page == page:
-                        button.changeColor("green")
+                        # print("Turned on a button")
+                        if isinstance(button, SoundButton):
+                            button.changeColor("green")
+                        elif isinstance(button, HotKeyButton):
+                            button.changeColor("orange")
             self.current_page = page
 
-    def LaunchPadMini_default_setup():          # This is my prefered setup for my Launchpad Mini, if you have a different model that launchpad.py supports then it's possible to create a setup for it too
-        self.deleteButton([0,0])
-        self.deleteButton([1,0])
-        self.deleteButton([2,0])
-        self.deleteButton([3,0])
-        self.deleteButton([4,0])
-        self.deleteButton([5,0])
-        self.deleteButton([6,0])
-        self.deleteButton([7,0])
-        self.deleteButton([8,1])
-        self.deleteButton([8,2])
-        self.deleteButton([8,3])
-        self.deleteButton([8,4])
-        self.deleteButton([8,5])
-        self.deleteButton([8,6])
-        self.deleteButton([8,7])
-        self.deleteButton([8,8])
+    def defaultSetup(self):          # This is my prefered setup for my Launchpad Mini, if you have a different model that launchpad.py supports then it's possible to create a setup for it too
+        if self.model == "Mini":
+            self.deleteButton([0,0])
+            self.deleteButton([1,0])
+            self.deleteButton([2,0])
+            self.deleteButton([3,0])
+            self.deleteButton([4,0])
+            self.deleteButton([5,0])
+            self.deleteButton([6,0])
+            self.deleteButton([7,0])
+            self.deleteButton([8,1])
+            self.deleteButton([8,2])
+            self.deleteButton([8,3])
+            self.deleteButton([8,4])
+            self.deleteButton([8,5])
+            self.deleteButton([8,6])
+            self.deleteButton([8,7])
+            self.deleteButton([8,8])
 
-        pad.createButton([0,0], PageButton)
-        pad.createButton([1,0], PageButton)
-        pad.createButton([2,0], PageButton)
-        pad.createButton([3,0], PageButton)
-        pad.createButton([4,0], PageButton)
-        pad.createButton([5,0], PageButton)
-        pad.createButton([6,0], PageButton)
-        pad.createButton([7,0], PageButton)
-        pad.createButton([8,1], MetaButton, function = "raise_volume")
-        pad.createButton([8,2], MetaButton, function = "lower_volume")
-        pad.createButton([8,3], MetaButton, function = "stop_music")
-        pad.createButton([8,4], MetaButton, function = "empty_function")
-        pad.createButton([8,5], MetaButton, function = "create_mode_toggle")
-        pad.createButton([8,7], MetaButton, function = "empty_function")
-        pad.createButton([8,6], MetaButton, function = "delete_mode_toggle")
-        pad.createButton([8,8], MetaButton, function = "exit")
+            self.createButton([0,0], PageButton)
+            self.createButton([1,0], PageButton)
+            self.createButton([2,0], PageButton)
+            self.createButton([3,0], PageButton)
+            self.createButton([4,0], PageButton)
+            self.createButton([5,0], PageButton)
+            self.createButton([6,0], PageButton)
+            self.createButton([7,0], PageButton)
+            self.createButton([8,1], MetaButton, function = "raise_volume")
+            self.createButton([8,2], MetaButton, function = "lower_volume")
+            self.createButton([8,3], MetaButton, function = "stop_music")
+            self.createButton([8,4], MetaButton, function = "empty_function")
+            self.createButton([8,5], MetaButton, function = "create_mode_toggle")
+            self.createButton([8,7], MetaButton, function = "empty_function")
+            self.createButton([8,6], MetaButton, function = "delete_mode_toggle")
+            self.createButton([8,8], MetaButton, function = "exit")
 
 def main():
 

@@ -18,7 +18,6 @@ body::-webkit-scrollbar {
 }
 
 header{
-
 }
 
 .carousel{
@@ -28,7 +27,7 @@ header{
 
 .carousel img{
     width: 100%;
-    height: 30vh;
+    height: 300px;
     flex-shrink: 0;
     object-fit: cover;
     object-position: center 80%;
@@ -44,7 +43,7 @@ header{
     position: absolute;
     left: 50%;
     transform: translateX(-50%);
-    top: 80px;
+    top: 103px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -53,7 +52,10 @@ header{
 }
 
 main{
-
+    width: 80%;
+    margin: 40px auto;
+    color: #C4DEFB;
+    font-size: 1.2em;
 }
 
 footer{
