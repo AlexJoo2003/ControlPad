@@ -1,5 +1,5 @@
 
-# [Control Pad](https://templink.com)
+# [Control Pad](https://alexjoo2003.github.io/Portfolio/Projects/ControlPad/)
 
 A Control Pad is a tool which you can use to play sounds or execute hot keys. By connecting a Launchpad (currently only Launchpad Mini is supported) you can assign buttons different functions.
 
