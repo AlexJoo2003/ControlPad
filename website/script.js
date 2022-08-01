@@ -18,4 +18,16 @@ function movePanel(){
     }
 }
 
+document.querySelectorAll("h1").forEach(title => {
+    title.addEventListener("click", function(e){
+        let section = title.nextElementSibling;
+        if (section.style.maxHeight){
+            section.style.maxHeight = null
+        }
+        else{
+            section.style.maxHeight = section.scrollHeight + "px";
+        }
+    });
+});
+
 setInterval(movePanel, 6000);

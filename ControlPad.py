@@ -166,7 +166,6 @@ class HotKeyButton(FunctionButton):
             pyautogui.keyUp(key)
         print("Keybind pressed")
 
-
 class MusicPad:
     def __init__(self, model = "Mini"):
         self.config_path = "./config.json"
@@ -396,7 +395,7 @@ def main():
 
     icon.run_detached()     # .run() will not work because it is blocking
 
-    mixer.init()                
+    mixer.init()
     
     global pad
     pad = MusicPad()

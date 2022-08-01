@@ -23,20 +23,95 @@
 
     <main>
 
-        <section id="what_is_it">
-            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Animi libero provident maxime obcaecati vero quo aperiam, inventore reiciendis quia est molestias, minima incidunt sapiente ipsa dolorem, repellat facilis nobis nemo?</p>
-            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Animi libero provident maxime obcaecati vero quo aperiam, inventore reiciendis quia est molestias, minima incidunt sapiente ipsa dolorem, repellat facilis nobis nemo?</p>
-            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Animi libero provident maxime obcaecati vero quo aperiam, inventore reiciendis quia est molestias, minima incidunt sapiente ipsa dolorem, repellat facilis nobis nemo?</p>
-            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Animi libero provident maxime obcaecati vero quo aperiam, inventore reiciendis quia est molestias, minima incidunt sapiente ipsa dolorem, repellat facilis nobis nemo?</p>
-            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Animi libero provident maxime obcaecati vero quo aperiam, inventore reiciendis quia est molestias, minima incidunt sapiente ipsa dolorem, repellat facilis nobis nemo?</p>
-            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Animi libero provident maxime obcaecati vero quo aperiam, inventore reiciendis quia est molestias, minima incidunt sapiente ipsa dolorem, repellat facilis nobis nemo?</p>
-            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Animi libero provident maxime obcaecati vero quo aperiam, inventore reiciendis quia est molestias, minima incidunt sapiente ipsa dolorem, repellat facilis nobis nemo?</p>
+        <h1>What is this</h1>
+        <section>
+            <p>
+                A Control Pad is a slick tool which you can use to play sounds or execute hot keys. By connecting a Launchpad (currently only Launchpad Mini is supported) you can assign buttons different functions.
+            </p>
+            <center><iframe width="560" height="315" src="https://www.youtube.com/embed/hGEoLTurNIE" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></center>
+        </section>
+        <h1>Installation</h1>
+        <section>
+            <p>
+                On Windows:
+                <ol>
+                    <li>
+                        Download manualy: On <a href="https://github.com/AlexJoo2003/ControlPad">Github</a> click on <code>ControlPad.exe</code> then click download and select destination
+                    </li>
+                    <li>
+                        Download with console: <br>
+                        <code>
+                            <span class="not-selectable">$</span> mkdir ControlPad <br>
+                            <span class="not-selectable">$</span> cd ControlPad <br>
+                            <span class="not-selectable">$</span> curl -o ControlPad.exe https://github.com/AlexJoo2003/ControlPad/raw/master/ControlPad.exe <br>
+                        </code>
+                    </li>
+                </ol>
+            </p>
+        </section>
+        <h1>Usage</h1>
+        <section>
+            <p>
+                In order to succesfully use the application, you need to have a Launchpad connected to the PC. The application has only been tested on a Launchpad Mini by Novation. Once connected, run the <code>ControlPad.exe</code>.
+                If all is done correctly the launchpad should have 1 <code>PageButton</code> lit up at the top, and a couple other <code>MetaButtons</code> on the right side.
+            </p>
+            <h3>Different Buttons</h3>
+            <p>
+                Top row is for the <code>PageButtons</code>, they dictate which page is currently selected for the grid. The right column shows the <code>MetaButtons</code>, they have special functions which stay the same on every page. The big area in the middle is the Grid, which is filled by different <code>FunctionButtons</code> such as <code>SoundButtons</code> and <code>HotKeyButtons</code>.
+            </p>
+            <h3>MetaButton functions</h3>
+            <p>
+                Here are the functions of the <code>MetaButtons</code> top to bottom (in the default configuration):
+                <ol>
+                    <li><code>Raise Volume</code> - raised the volume of the application by 10%</li>
+                    <li><code>Lower Volume</code> - same as above but the other way around</li>
+                    <li><code>Stop Sound</code> - Stops any sound the application is running</li>
+                    <li>Empty</li>
+                    <li><code>Create button</code> - This enables you to create new buttons (More on that down bellow)</li>
+                    <li><code>Delete button</code> - same as above but the other way around</li>
+                    <li>Empty</li>
+                    <li><code>Exit</code> - Cleanly exits the application (This is the preffered way of exiting)</li>
+                </ol>
+                <div class="note warning">
+                    Please refrain from unpluging the launchpad before you have exited the application using the <code>ExitButton</code>. If it does happen anyway, in the system tray you can click on the green circle and press exit. While that option is always available it is not recomended because it will not be able to clear the Launchpad buffer and some bugs may occur on the next launch.
+                </div>
+            </p>
+            <h3>Creating new buttons</h3>
+            <div class="note">
+                You wont be able to create a new button where a button already exists, you will have to delete it first.
+            </div>
+            <p>
+                When pressing the <code>Create Button</code> you will enable <code>create_mode</code>. This is established when the button changes color from orange to green.
+            </p>
+            <p>
+                In order to create a <code>SoundButton</code>, you need to have an .mp3 file downloaded on the system. In the explorer click on the file and then click on the copy path button. You can now press on any button in the grid to assign that sound file to it. If everything was done correctly, the <code>Create Button</code> would turn back to orange and the new grid button would lit up green.
+            </p>
+            <p>
+                In order to create a <code>HotKeyButton</code>, write down a sequence of keys separeted by spaces and copy it. Then simply press on any available grid button, you should have a new button lit up orange.
+            </p>
+            <div class="note">
+                You can copy the <code>path to the file</code> or the <code>key sequence</code> even before you have enabled <code>create_mode</code>. As long as the value in the clipboard is a correct, this will work.
+            </div>
+            <div class="note">
+                <a href="https://pyautogui.readthedocs.io/en/latest/keyboard.html#keyboard-keys">Here</a> can you find accepted keys to use in the sequence with exception of space
+            </div>
+            <h3>Deleting buttons</h3>
+            <p>
+                The idea of deleting buttons is similar to creating new buttons but even simplier. Just press the <code>Delete Button</code> and <code>delete_mode</code> will enable whilst turning the button from orange to red. Press on any existing button in the grid and it will dissapear and turn off the <code>delete_mode</code>.
+            </p>
+        </section>
+        <h1>Extra</h1>
+        <section>
+            <h3>How to play sounds through the microphone?</h3>
+            <p>
+                So far, only you will be able to listen to the sounds you play on the launchpad. In order to make everyone in your call hear the sounds too, you need to use Voicemeeter Banana and and CABLE Input. <a href="https://www.youtube.com/watch?v=8c1LPeyVjdE">This Youtube Guide made by Tekh</a> describes how to use these tools to achieve this goal. Note that instead of setting up your browser to be the source of sound as it was described in the guide, do that for the ControlPad.exe.
+            </p>
         </section>
 
     </main>
     
     <footer>
-        
+        Made by Alex_Joo on August 2022.
     </footer>
 
 <script src="script.js"></script>

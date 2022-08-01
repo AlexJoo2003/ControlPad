@@ -1,0 +1,149 @@
+{
+    "buttons": [
+        {
+            "class": "PageButton",
+            "position": [
+                0,
+                0
+            ],
+            "args": {}
+        },
+        {
+            "class": "PageButton",
+            "position": [
+                1,
+                0
+            ],
+            "args": {}
+        },
+        {
+            "class": "PageButton",
+            "position": [
+                2,
+                0
+            ],
+            "args": {}
+        },
+        {
+            "class": "PageButton",
+            "position": [
+                3,
+                0
+            ],
+            "args": {}
+        },
+        {
+            "class": "PageButton",
+            "position": [
+                4,
+                0
+            ],
+            "args": {}
+        },
+        {
+            "class": "PageButton",
+            "position": [
+                5,
+                0
+            ],
+            "args": {}
+        },
+        {
+            "class": "PageButton",
+            "position": [
+                6,
+                0
+            ],
+            "args": {}
+        },
+        {
+            "class": "PageButton",
+            "position": [
+                7,
+                0
+            ],
+            "args": {}
+        },
+        {
+            "class": "MetaButton",
+            "position": [
+                8,
+                1
+            ],
+            "args": {
+                "function": "raise_volume"
+            }
+        },
+        {
+            "class": "MetaButton",
+            "position": [
+                8,
+                2
+            ],
+            "args": {
+                "function": "lower_volume"
+            }
+        },
+        {
+            "class": "MetaButton",
+            "position": [
+                8,
+                3
+            ],
+            "args": {
+                "function": "stop_music"
+            }
+        },
+        {
+            "class": "MetaButton",
+            "position": [
+                8,
+                4
+            ],
+            "args": {
+                "function": "empty_function"
+            }
+        },
+        {
+            "class": "MetaButton",
+            "position": [
+                8,
+                5
+            ],
+            "args": {
+                "function": "create_mode_toggle"
+            }
+        },
+        {
+            "class": "MetaButton",
+            "position": [
+                8,
+                7
+            ],
+            "args": {
+                "function": "empty_function"
+            }
+        },
+        {
+            "class": "MetaButton",
+            "position": [
+                8,
+                6
+            ],
+            "args": {
+                "function": "delete_mode_toggle"
+            }
+        },
+        {
+            "class": "MetaButton",
+            "position": [
+                8,
+                8
+            ],
+            "args": {
+                "function": "exit"
+            }
+        }
+    ],
+    "current_page": 0
+}
